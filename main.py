@@ -1,7 +1,9 @@
 import pygame
 import sys
 import time
-from sprites import BG, Ground
+
+from pygame.constants import MOUSEBUTTONUP
+from sprites import BG, Ground, Plane
 from settings import WINDOW_HEIGHT, WINDOW_WIDTH, FRAMERATE
 
 
@@ -28,6 +30,7 @@ class Game:
         # sprite setup
         BG(self.all_sprites, self.scale_factor)
         Ground(self.all_sprites, self.scale_factor)
+        self.plane = Plane(self.all_sprites, self.scale_factor / 1.7)
 
     def run(self):
         last_time = time.time()
@@ -35,11 +38,15 @@ class Game:
             # delta time
             dt = time.time() - last_time
             last_time = time.time()
+
             # event loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.plane.jump()
+
             # game logic
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_surface)
