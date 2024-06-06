@@ -1,6 +1,7 @@
 import pygame
 from pygame.transform import rotozoom
 from settings import *
+from random import choice, randint
 
 
 class BG(pygame.sprite.Sprite):
@@ -31,6 +32,7 @@ class BG(pygame.sprite.Sprite):
 class Ground(pygame.sprite.Sprite):
     def __init__(self, groups, scale_factor):
         super().__init__(groups)
+        self.sprite_type = "ground"
 
         # image
         ground_surf = pygame.image.load(
@@ -41,6 +43,9 @@ class Ground(pygame.sprite.Sprite):
         # position
         self.rect = self.image.get_rect(bottomleft=(0, WINDOW_HEIGHT))
         self.pos = pygame.math.Vector2(self.rect.topleft)
+
+        # mase
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
         self.pos.x -= 360 * dt
@@ -67,6 +72,13 @@ class Plane(pygame.sprite.Sprite):
         self.gravity = 600
         self.direction = 0
 
+        # mask
+        self.mask = pygame.mask.from_surface(self.image)
+
+        # sound
+        self.jump_sound = pygame.mixer.Sound("./sounds/jump.wav")
+        self.jump_sound.set_volume(0.3)
+
     def import_frames(self, scale_factor):
         self.frames = []
         for i in range(3):
@@ -82,6 +94,7 @@ class Plane(pygame.sprite.Sprite):
         self.rect.y = round(self.pos.y)
 
     def jump(self):
+        self.jump_sound.play()
         self.direction = -400
 
     def animate(self, dt):
@@ -94,8 +107,42 @@ class Plane(pygame.sprite.Sprite):
         rotated_plane = pygame.transform.rotozoom(
             self.image, -self.direction * 0.05, 1)
         self.image = rotated_plane
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
         self.apply_gravity(dt)
         self.animate(dt)
         self.rotate()
+
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, groups, scale_factor):
+        super().__init__(groups)
+        self.sprite_type = "obstacle"
+
+        orientiation = choice(("up", "down"))
+        surf = pygame.image.load(
+            f"./graphics/obstacles/{choice((0, 1))}.png").convert_alpha()
+        self.image = pygame.transform.scale(
+            surf, pygame.math.Vector2(surf.get_size()) * scale_factor)
+
+        x = WINDOW_WIDTH + randint(40, 100)
+
+        if orientiation == "up":
+            y = WINDOW_HEIGHT + randint(10, 50)
+            self.rect = self.image.get_rect(midbottom=(x, y))
+        else:
+            y = randint(-50, -10)
+            self.image = pygame.transform.flip(self.image, False, True)
+            self.rect = self.image.get_rect(midtop=(x, y))
+
+        self.pos = pygame.math.Vector2(self.rect.topleft)
+
+        # mase
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self, dt):
+        self.pos.x -= 400 * dt
+        self.rect.x = round(self.pos.x)
+        if self.rect.right <= -100:
+            self.kill()
