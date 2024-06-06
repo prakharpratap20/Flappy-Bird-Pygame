@@ -1,13 +1,14 @@
 import pygame
 import sys
 import time
+from sprites import BG, Ground
 from settings import WINDOW_HEIGHT, WINDOW_WIDTH, FRAMERATE
-from sprites import BG
 
 
 class Game:
 
     def __init__(self):
+
         # setup
         pygame.init()
         self.display_surface = pygame.display.set_mode(
@@ -19,13 +20,14 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()
 
-        # scalte factor
+        # scale factor
         bg_height = pygame.image.load(
             "./graphics/environment/background.png").get_height()
         self.scale_factor = WINDOW_HEIGHT / bg_height
 
         # sprite setup
         BG(self.all_sprites, self.scale_factor)
+        Ground(self.all_sprites, self.scale_factor)
 
     def run(self):
         last_time = time.time()
@@ -33,13 +35,11 @@ class Game:
             # delta time
             dt = time.time() - last_time
             last_time = time.time()
-
             # event loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
             # game logic
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_surface)
