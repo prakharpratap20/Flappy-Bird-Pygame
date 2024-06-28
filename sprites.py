@@ -1,6 +1,6 @@
 import pygame
-from pygame.transform import rotozoom
-from settings import *
+# from pygame.transform import rotozoom
+from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from random import choice, randint
 
 
@@ -38,7 +38,8 @@ class Ground(pygame.sprite.Sprite):
         ground_surf = pygame.image.load(
             "./graphics/environment/ground.png").convert_alpha()
         self.image = pygame.transform.scale(
-            ground_surf, pygame.math.Vector2(ground_surf.get_size()) * scale_factor)
+            ground_surf,
+            pygame.math.Vector2(ground_surf.get_size()) * scale_factor)
 
         # position
         self.rect = self.image.get_rect(bottomleft=(0, WINDOW_HEIGHT))

@@ -1,9 +1,9 @@
-from os import PathLike
+# from os import PathLike
 import pygame
 import sys
 import time
 
-from pygame.constants import MOUSEBUTTONUP
+# from pygame.constants import MOUSEBUTTONUP
 from sprites import BG, Ground, Obstacle, Plane
 from settings import WINDOW_HEIGHT, WINDOW_WIDTH, FRAMERATE
 
@@ -56,7 +56,9 @@ class Game:
         self.music.play(loops=-1)
 
     def collisions(self):
-        if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False, pygame.sprite.collide_mask) or self.plane.rect.top <= 0:
+        if pygame.sprite.spritecollide(self.plane, self.collision_sprites,
+                                       False, pygame.sprite.collide_mask
+                                       ) or self.plane.rect.top <= 0:
             for sprite in self.collision_sprites.sprites():
                 if sprite.sprite_type == "obstacle":
                     sprite.kill()
