@@ -5,7 +5,15 @@ from random import choice, randint
 
 
 class BG(pygame.sprite.Sprite):
+    """
+    Background class for the game environment that moves to the left at a constant speed
+    to give the illusion of movement.
+    """
+
     def __init__(self, groups, scale_factor):
+        """
+        Initialize the background sprite with the given groups and scale factor.
+        """
         super().__init__(groups)
         bg_image = pygame.image.load(
             "./graphics/environment/background.png").convert()
@@ -23,6 +31,9 @@ class BG(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.topleft)
 
     def update(self, dt):
+        """
+        Update the background sprite by moving it to the left at a constant speed.
+        """
         self.pos.x -= 300 * dt
         if self.rect.centerx <= 0:
             self.pos.x = 0
@@ -30,7 +41,15 @@ class BG(pygame.sprite.Sprite):
 
 
 class Ground(pygame.sprite.Sprite):
+    """
+    Ground class for the game environment that moves to the left at a constant speed
+    to give the illusion of movement.
+    """
+
     def __init__(self, groups, scale_factor):
+        """
+        Initialize the ground sprite with the given groups and scale factor.
+        """
         super().__init__(groups)
         self.sprite_type = "ground"
 
@@ -49,6 +68,9 @@ class Ground(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
+        """
+        Update the ground sprite by moving it to the left at a constant speed.
+        """
         self.pos.x -= 360 * dt
         if self.rect.centerx <= 0:
             self.pos.x = 0
@@ -56,7 +78,15 @@ class Ground(pygame.sprite.Sprite):
 
 
 class Plane(pygame.sprite.Sprite):
+    """
+    Plane class for the player controlled sprite.
+    The plane moves up and down based on the user input and falls down due to gravity.
+    """
+
     def __init__(self, groups, scale_factor):
+        """
+        Initialize the plane sprite with the given groups and scale factor.
+        """
         super().__init__(groups)
 
         # image
@@ -81,6 +111,9 @@ class Plane(pygame.sprite.Sprite):
         self.jump_sound.set_volume(0.3)
 
     def import_frames(self, scale_factor):
+        """
+        Import the frames of the plane sprite and scale them based on the given scale factor.
+        """
         self.frames = []
         for i in range(3):
             surf = pygame.image.load(
@@ -90,34 +123,56 @@ class Plane(pygame.sprite.Sprite):
             self.frames.append(scaled_surface)
 
     def apply_gravity(self, dt):
+        """
+        Apply gravity to the plane sprite to make it fall down.
+        """
         self.direction += self.gravity * dt
         self.pos.y += self.direction * dt
         self.rect.y = round(self.pos.y)
 
     def jump(self):
+        """
+        Make the plane sprite jump by applying an upward force.
+        """
         self.jump_sound.play()
         self.direction = -400
 
     def animate(self, dt):
+        """
+        Animate the plane sprite by changing the frame index.
+        """
         self.frame_index += 10 * dt
         if self.frame_index >= len(self.frames):
             self.frame_index = 0
         self.image = self.frames[int(self.frame_index)]
 
     def rotate(self):
+        """
+        Rotate the plane sprite based on the direction it is moving.
+        """
         rotated_plane = pygame.transform.rotozoom(
             self.image, -self.direction * 0.05, 1)
         self.image = rotated_plane
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
+        """
+        Update the plane sprite by applying gravity, animating it, and rotating it.
+        """
         self.apply_gravity(dt)
         self.animate(dt)
         self.rotate()
 
 
 class Obstacle(pygame.sprite.Sprite):
+    """
+    Obstacle class for the obstacles that the player must avoid.
+    """
+
     def __init__(self, groups, scale_factor):
+        """
+        Initialize the obstacle sprite with the given groups and scale factor.
+        """
         super().__init__(groups)
         self.sprite_type = "obstacle"
 
@@ -143,6 +198,9 @@ class Obstacle(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
+        """
+        Update the obstacle sprite by moving it to the left at a constant speed.
+        """
         self.pos.x -= 400 * dt
         self.rect.x = round(self.pos.x)
         if self.rect.right <= -100:
