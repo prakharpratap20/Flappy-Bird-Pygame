@@ -9,6 +9,9 @@ from settings import WINDOW_HEIGHT, WINDOW_WIDTH, FRAMERATE
 
 
 class Game:
+    """
+    Main game class that handles the game loop and game logic for Flappy Bird.
+    """
 
     def __init__(self):
 
@@ -56,6 +59,10 @@ class Game:
         self.music.play(loops=-1)
 
     def collisions(self):
+        """
+        Check for collisions between the plane and the ground or obstacles.
+        If a collision is detected, the game is set to inactive and the plane is killed.
+        """
         if pygame.sprite.spritecollide(self.plane, self.collision_sprites,
                                        False, pygame.sprite.collide_mask
                                        ) or self.plane.rect.top <= 0:
@@ -66,6 +73,10 @@ class Game:
             self.plane.kill()
 
     def display_score(self):
+        """
+        Display the current score on the screen.
+        If the game is active, the score is calculated based on the time since the game started.
+        """
         if self.active:
             self.score = (pygame.time.get_ticks() - self.start_offset) // 1000
             y = WINDOW_HEIGHT / 10
@@ -78,6 +89,9 @@ class Game:
         self.display_surface.blit(score_surf, score_rect)
 
     def run(self):
+        """
+        Main game loop. Handles events, game logic, and rendering.
+        """
         last_time = time.time()
         while True:
             # delta time
