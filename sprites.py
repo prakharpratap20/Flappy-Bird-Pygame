@@ -121,7 +121,7 @@ class Obstacle(pygame.sprite.Sprite):
         super().__init__(groups)
         self.sprite_type = "obstacle"
 
-        orientiation = choice(("up", "down"))
+        orientation = choice(("up", "down"))
         surf = pygame.image.load(
             f"./graphics/obstacles/{choice((0, 1))}.png").convert_alpha()
         self.image = pygame.transform.scale(
@@ -129,7 +129,7 @@ class Obstacle(pygame.sprite.Sprite):
 
         x = WINDOW_WIDTH + randint(40, 100)
 
-        if orientiation == "up":
+        if orientation == "up":
             y = WINDOW_HEIGHT + randint(10, 50)
             self.rect = self.image.get_rect(midbottom=(x, y))
         else:
